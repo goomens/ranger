@@ -99,6 +99,54 @@ bool Data::loadFromFile(std::string filename) {
   return result;
 }
 
+bool Data::loadFromBed(std::string filename) {
+  std::ifstream bimfile(filename + ".bim");
+  std::string line, token;
+  int snpcount = 0;
+  while (getline(bimfile, line)) {
+    std::stringstream str(line);
+    getline(str, token, '\t');
+    getline(str, token, '\t');
+    variable_names.push_back(token);
+    snpcount++;
+  }
+
+  std::ifstream file(filename + ".bed", std::ios::in|std::ios::binary);
+  if (!file.good()) {
+    throw std::runtime_error("Could not open input file.");
+  }
+
+  char* firstblock = new char[3];
+  file.read(firstblock, 3);
+  if (firstblock[0] != 108 && firstblock[1] != 27 && firstblock[2] != 1) {
+    throw std::runtime_error("Not a valid PLINK file in SNP-major mode");
+  }
+  delete[] firstblock;
+
+  int snplength = num_rows / 4;
+  if (num_rows % 4 != 0) { snplength++; }
+  int len = snplength * snpcount;
+
+  int t,j;
+  int* mapping = new int[255];
+  for (int i = 0; i <= 255; i++) {
+    t = 0;
+    for (j = 0; j < 4; j++) {
+      t += plinkmap[(i & mask[j]) >> offset[j]] << (j * 2);
+    }
+    mapping[i] = t;
+  }
+
+  unsigned char* block = new unsigned char[snplength * snpcount];
+  file.read((char*)block, len);
+  file.close();
+  for (j = 0; j < len; j++) {
+    block[j] = mapping[block[j]];
+  }
+  addSparseData(block, snpcount);
+  return 1;
+}
+
 bool Data::loadFromFileWhitespace(std::ifstream& input_file, std::string header_line) {
 
   // Read header

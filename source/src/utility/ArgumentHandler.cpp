@@ -39,7 +39,7 @@ ArgumentHandler::ArgumentHandler(int argc, char **argv) :
         DEFAULT_PREDICTIONTYPE), splitweights(""), nthreads(DEFAULT_NUM_THREADS), predall(false), alpha(DEFAULT_ALPHA), minprop(
         DEFAULT_MINPROP), file(""), impmeasure(DEFAULT_IMPORTANCE_MODE), targetpartitionsize(0), mtry(0), outprefix(
         "ranger_out"), probability(false), splitrule(DEFAULT_SPLITRULE), statusvarname(""), ntree(DEFAULT_NUM_TREE), replace(
-        true), verbose(false), write(false), treetype(TREE_CLASSIFICATION), seed(0) {
+        true), verbose(false), write(false), treetype(TREE_CLASSIFICATION), seed(0), bedfile("") {
   this->argc = argc;
   this->argv = argv;
 }
@@ -50,7 +50,7 @@ ArgumentHandler::~ArgumentHandler() {
 int ArgumentHandler::processArguments() {
 
   // short options
-  char const *short_options = "A:C:D:F:HM:NP:Q:S:U:XZa:b:c:f:hil::m:o:pr:s:t:uvwy:z:";
+  char const *short_options = "A:C:D:F:HM:NP:Q:S:U:XZa:b:c:e:f:hil::m:o:pr:s:t:uvwy:z:";
 
   // long options: longname, no/optional/required argument?, flag(not used!), shortname
     const struct option long_options[] = {
@@ -72,6 +72,7 @@ int ArgumentHandler::processArguments() {
       { "alpha",                required_argument,  0, 'a'},
       { "minprop",              required_argument,  0, 'b'},
       { "catvars",              required_argument,  0, 'c'},
+      { "bedfile",              required_argument,  0, 'e'},
       { "file",                 required_argument,  0, 'f'},
       { "help",                 no_argument,        0, 'h'},
       { "impmeasure",           required_argument,  0, 'i'},
@@ -231,6 +232,10 @@ int ArgumentHandler::processArguments() {
 
     case 'f':
       file = optarg;
+      break;
+
+    case 'e':
+      bedfile = optarg;
       break;
 
     case 'h':
@@ -474,6 +479,7 @@ void ArgumentHandler::displayHelp() {
   std::cout << "    " << "--help                        Print this help." << std::endl;
   std::cout << "    " << "--version                     Print version and citation information." << std::endl;
   std::cout << "    " << "--verbose                     Turn on verbose mode." << std::endl;
+  std::cout << "    " << "--bedfile FILE                Filename of PLINK .bed file for genotype data." << std::endl;
   std::cout << "    " << "--file FILE                   Filename of input data. Only numerical values are supported." << std::endl;
   std::cout << "    " << "--treetype TYPE               Set tree type to:" << std::endl;
   std::cout << "    " << "                              TYPE = 1: Classification." << std::endl;

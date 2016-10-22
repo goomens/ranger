@@ -69,6 +69,9 @@ const uint MAX_MEM_MODE = 2;
 static const int mask[4] = {192,48,12,3};
 static const int offset[4] = {6,4,2,0};
 
+// Map data from PLINK
+static const int plinkmap[4] = {1,0,2,3};
+
 // Variable importance
 enum ImportanceMode {
   IMP_NONE = 0,

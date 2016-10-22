@@ -51,6 +51,7 @@ public:
   bool loadFromFile(std::string filename);
   bool loadFromFileWhitespace(std::ifstream& input_file, std::string header_line);
   bool loadFromFileOther(std::ifstream& input_file, std::string header_line, char seperator);
+  bool loadFromBed(std::string filename);
 
   void getAllValues(std::vector<double>& all_values, std::vector<size_t>& sampleIDs, size_t varID);
 

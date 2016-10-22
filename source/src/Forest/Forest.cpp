@@ -64,7 +64,7 @@ void Forest::initCpp(std::string dependent_variable_name, MemoryMode memory_mode
     std::string split_select_weights_file, std::vector<std::string>& always_split_variable_names,
     std::string status_variable_name, bool sample_with_replacement, std::vector<std::string>& unordered_variable_names,
     bool memory_saving_splitting, SplitRule splitrule, std::string case_weights_file, bool predict_all,
-    double sample_fraction, double alpha, double minprop, bool holdout, PredictionType prediction_type) {
+    double sample_fraction, double alpha, double minprop, bool holdout, PredictionType prediction_type, std::string bed_file) {
 
   this->verbose_out = verbose_out;
 
@@ -87,6 +87,11 @@ void Forest::initCpp(std::string dependent_variable_name, MemoryMode memory_mode
   if (rounding_error) {
     *verbose_out << "Warning: Rounding or Integer overflow occurred. Use FLOAT or DOUBLE precision to avoid this."
         << std::endl;
+  }
+
+  if (!bed_file.empty()){
+    *verbose_out << "Loading bed file: " << bed_file << "." << std::endl;
+    data->loadFromBed(bed_file);
   }
 
   // Set prediction mode
